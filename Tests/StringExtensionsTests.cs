@@ -21,29 +21,29 @@ public class StringExtensionsTests(ITestOutputHelper outputHelper)
     {
         outputHelper.WriteLine($"source: {source} value: {value}");
         var indexes = source.AllIndexesOf(value, StringComparison.OrdinalIgnoreCase);
-        indexes.Should().BeEquivalentTo(expectedIndexes);
+        indexes.ShouldBe(expectedIndexes);
     }
-    
+
     [Theory]
     [ClassData(typeof(FindSubstringsTestCases))]
     public void FindSubstrings_Returns_Expected_Results(string source, string[] substrings, (string Value, int Index)[] expectedResults)
     {
         outputHelper.WriteLine($"source: {source} substrings: {string.Join(", ", substrings)}");
         var results = source.FindSubstrings(substrings, StringComparison.OrdinalIgnoreCase);
-        results.Should().BeEquivalentTo(expectedResults, opt => opt.WithStrictOrdering());
+        results.ShouldBe(expectedResults);
     }
 
-    private class FindSubstringsTestCases : TheoryData<string, string[], (string Value, int Index)[]>
+    public class FindSubstringsTestCases : TheoryData<string, string[], (string Value, int Index)[]>
     {
         public FindSubstringsTestCases()
         {
-            Add("abc", new[] { "a" }, new[] { ("a", 0) });
-            Add("abcabc", new[] { "a" }, new[] { ("a", 0), ("a", 3) });
-            Add("abcabc", new[] { "a", "b" }, new[] { ("a", 0), ("b", 1), ("a", 3), ("b", 4) });
-            Add("abcabc", new[] { "ab", "abc" }, new[] { ("ab", 0), ("abc", 0), ("ab", 3), ("abc", 3) });
+            Add("abc", ["a"], [("a", 0)]);
+            Add("abcabc", ["a"], [("a", 0), ("a", 3)]);
+            Add("abcabc", ["a", "b"], [("a", 0), ("b", 1), ("a", 3), ("b", 4)]);
+            Add("abcabc", ["ab", "abc"], [("ab", 0), ("abc", 0), ("ab", 3), ("abc", 3)]);
         }
     }
-    
+
     [Theory]
     [InlineData(new[] { "a", "b", "c" }, ", ", "a, b, c")]
     [InlineData(new[] { "a", "b", "c" }, " ", "a b c")]
@@ -55,7 +55,7 @@ public class StringExtensionsTests(ITestOutputHelper outputHelper)
     {
         outputHelper.WriteLine($"values: {string.Join(", ", values)} separator: {separator}");
         var result = values.JoinWith(separator);
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
     
     [Theory]
@@ -69,7 +69,7 @@ public class StringExtensionsTests(ITestOutputHelper outputHelper)
     {
         outputHelper.WriteLine($"input:\r\n{WriteOutEscapedLinefeeds(input)}");
         var result = input.ToParagraphs();
-        result.Should().BeEquivalentTo(expected);
+        result.ShouldBe(expected);
     }
     
     [Theory]
@@ -83,7 +83,7 @@ public class StringExtensionsTests(ITestOutputHelper outputHelper)
     {
         outputHelper.WriteLine($"input:\r\n{WriteOutEscapedLinefeeds(input)}");
         var result = input.ToLines();
-        result.Should().BeEquivalentTo(expected);
+        result.ShouldBe(expected);
     }
     
     [Theory]
@@ -97,7 +97,7 @@ public class StringExtensionsTests(ITestOutputHelper outputHelper)
     {
         outputHelper.WriteLine($"input:\r\n{WriteOutEscapedLinefeeds(input)}");
         var result = input.ToLines(true);
-        result.Should().BeEquivalentTo(expected);
+        result.ShouldBe(expected);
     }
 
     [Theory]
@@ -108,31 +108,31 @@ public class StringExtensionsTests(ITestOutputHelper outputHelper)
     {
         outputHelper.WriteLine($"input: \"{input}\" index: {index} newChar: {newChar}");
         var result = input.ReplaceAt(index, newChar);
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
     
     [Fact]
     public void ReplaceAt_With_Index_Out_Of_Range_Throws_ArgumentOutOfRangeException()
     {
         Action indexLow = () => "abc".ReplaceAt(-1, 'x');
-        indexLow.Should().Throw<IndexOutOfRangeException>();
+        indexLow.ShouldThrow<IndexOutOfRangeException>();
         
         Action indexHigh = () => "abc".ReplaceAt(3, 'x');
-        indexHigh.Should().Throw<IndexOutOfRangeException>();
+        indexHigh.ShouldThrow<IndexOutOfRangeException>();
     }
     
     [Fact]
     public void ReplaceAt_With_Empty_Input_Throws_ArgumentException()
     {
         Action nullInput = () => string.Empty.ReplaceAt(0, 'x');
-        nullInput.Should().Throw<ArgumentException>();
+        nullInput.ShouldThrow<ArgumentException>();
     }
     
     [Fact]
     public void ReplaceAt_With_Null_Input_Throws_ArgumentNullException()
     {
         Action nullInput = () => ((string)null!).ReplaceAt(0, 'x');
-        nullInput.Should().Throw<ArgumentNullException>();
+        nullInput.ShouldThrow<ArgumentNullException>();
     }
     
     [Theory]
@@ -147,7 +147,7 @@ public class StringExtensionsTests(ITestOutputHelper outputHelper)
     {
         outputHelper.WriteLine($"input: \"{input}\" index: {index} newSubstring: \"{newSubstring}\"");
         var result = input.OverwriteAt(index, newSubstring);
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
 }

@@ -19,7 +19,7 @@ public class RegExExtensionsTests(ITestOutputHelper outputHelper)
         var mapToGenericMethod = mapToMethodInfo!.MakeGenericMethod(expectedType);
         var result = mapToGenericMethod.Invoke(null, new[] { match });
         
-        result.Should().BeEquivalentTo(expectedResult);
+        result.ShouldBeEquivalentTo(expectedResult);
     }
 }
 
