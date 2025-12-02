@@ -43,7 +43,7 @@ public class SecretEntrance : BaseDayModule
     {
         // admittedly this is a bit lazy to brute force it like this, but we'll give it a try and optimize if necessary
         var expandedMovements = LoadMovements(data)
-            .SelectMany(m => Enumerable.Range(0, m.Distance).Select(_ => new DialMovement(m.Direction, 1)));
+            .SelectMany(m => Enumerable.Repeat(new DialMovement(m.Direction, 1), m.Distance));
 
         var dial = new SafeDial(100, 50);
 
