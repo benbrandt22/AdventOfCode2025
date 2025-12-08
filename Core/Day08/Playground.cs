@@ -23,7 +23,7 @@ public class Playground : BaseDayModule
     public long ExecutePart1(string data)
     {
         var points = LoadJunctionPoints(data);
-        var pairs = PairWithClosestPoints(points);
+        var pairs = FindAllDistanceOrderedPairings(points);
 
         var solution = 0;
         WriteLine($"Solution: {solution}");
@@ -40,7 +40,7 @@ public class Playground : BaseDayModule
     private List<Point3d> LoadJunctionPoints(string data)
     {
         return data
-            .ToLines()
+            .ToLines(removeEmptyLines: true)
             .Select(line =>
             {
                 var nums = line.Split(',').Select(long.Parse).ToArray();
@@ -76,24 +76,14 @@ public class Playground : BaseDayModule
         public float Distance { get; }
     }
 
-    public List<PairedPoints> PairWithClosestPoints(List<Point3d> points)
+    public List<PairedPoints> FindAllDistanceOrderedPairings(List<Point3d> points)
     {
-        var output = new List<PairedPoints>();
-        while (true)
-        {
-            var p1 = points[0];
-
-            // sort by distance from first point. First should be 0, second should be its closest neighbor
-            points = points.OrderBy(p => p.DistanceTo(p1)).ToList();
-
-            output.Add(new PairedPoints(points[0], points[1]));
-
-            points.RemoveAt(1);
-            points.RemoveAt(0);
-
-            if(points.Count == 0) { break; }
-        }
-        return output.OrderBy(x => x.Distance).ToList();
+        var distanceOrderedPairings = points
+            .GetAllPairs()
+            .Select(pair => new PairedPoints(pair.Item1, pair.Item2))
+            .OrderBy(pair => pair.Distance)
+            .ToList();
+        return distanceOrderedPairings;
     }
 }
 
